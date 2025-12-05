@@ -254,6 +254,21 @@ tbody tr:hover {
   background-color: #eef2ff;
 }
 
+/* Footer / aviso legal */
+
+.app-footer {
+  margin: 1.5rem 2rem 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.app-footer strong {
+  font-weight: 600;
+}
+
 /* Responsive */
 
 @media (max-width: 900px) {
@@ -267,5 +282,9 @@ tbody tr:hover {
 
   h1 {
     font-size: 1.8rem;
+  }
+
+  .app-footer {
+    margin: 1.5rem 1rem 0;
   }
 }

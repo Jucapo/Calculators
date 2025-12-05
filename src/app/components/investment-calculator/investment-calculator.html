@@ -94,7 +94,7 @@
           </label>
         </div>
 
-        <!-- Campo % incremento anual -->
+        <!-- Campos IPC -->
         @if (incrementEnabled) {
         <div class="form-group">
           <label for="incrementAnnualPercent">
@@ -108,6 +108,21 @@
             name="incrementAnnualPercent"
             required
             min="0"
+          />
+        </div>
+
+        <!-- Tope máximo de aporte mensual -->
+        <div class="form-group">
+          <label for="maxMonthlyContribution">
+            Aporte mensual máximo (tope)
+          </label>
+          <input
+            id="maxMonthlyContribution"
+            type="number"
+            [(ngModel)]="maxMonthlyContribution"
+            name="maxMonthlyContribution"
+            min="0"
+            placeholder="Sin tope si se deja vacío"
           />
         </div>
         }
@@ -322,4 +337,14 @@
     </section>
     }
   </div>
+
+  <!-- Footer / aviso legal -->
+  <footer class="app-footer">
+    <p>
+      Desarrollado por
+      <strong>Juan Camilo Posso Ponce</strong> · 2025 · Esta herramienta es
+      únicamente para fines educativos y no constituye asesoría financiera
+      profesional.
+    </p>
+  </footer>
 </div>

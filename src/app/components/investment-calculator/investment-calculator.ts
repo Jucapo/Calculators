@@ -32,8 +32,11 @@ export class InvestmentCalculatorComponent {
   monthlyContribution = 50000;
   years = 22;
 
+  // IPC
   incrementEnabled = true;
   incrementAnnualPercent = 5;
+  // Tope máximo para el aporte mensual
+  maxMonthlyContribution: number | null = null;
 
   rows: ProjectionRow[] = [];
 
@@ -81,6 +84,11 @@ export class InvestmentCalculatorComponent {
       ? this.incrementAnnualPercent / 100
       : 0;
 
+    const hasMax =
+      this.incrementEnabled &&
+      this.maxMonthlyContribution != null &&
+      this.maxMonthlyContribution > 0;
+
     const totalYears = this.years;
 
     let balance1 = 0;
@@ -88,7 +96,14 @@ export class InvestmentCalculatorComponent {
     let totalContributed = 0;
 
     for (let year = 1; year <= totalYears; year++) {
-      const monthlyForYear = baseMonthly * Math.pow(1 + incRate, year - 1);
+      // aporte mensual calculado por IPC
+      let monthlyForYear = baseMonthly * Math.pow(1 + incRate, year - 1);
+
+      // aplicar tope máximo si corresponde
+      if (hasMax && monthlyForYear > this.maxMonthlyContribution!) {
+        monthlyForYear = this.maxMonthlyContribution!;
+      }
+
       let yearlyContribution = 0;
 
       for (let month = 1; month <= 12; month++) {
@@ -130,7 +145,11 @@ export class InvestmentCalculatorComponent {
       this.finalTotalBalance = last.totalBalance1;
 
       // Escenario 2 (si está activo)
-      if (this.hasSecondaryRate && last.interestEarned2 != null && last.totalBalance2 != null) {
+      if (
+        this.hasSecondaryRate &&
+        last.interestEarned2 != null &&
+        last.totalBalance2 != null
+      ) {
         this.finalInterestEarned2 = last.interestEarned2;
         this.finalTotalBalance2 = last.totalBalance2;
       } else {
