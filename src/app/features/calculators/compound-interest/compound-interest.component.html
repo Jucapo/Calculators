@@ -1,0 +1,299 @@
+<div class="calculator-page">
+  <header class="calculator-page__header">
+    <h1 class="calculator-page__title">Simulador de Inversión con Interés Compuesto</h1>
+    <div class="calculator-page__toolbar">
+      <button
+      type="button"
+      class="btn calculator-page__toolbar-button"
+      [class.btn--primary]="!showForm()"
+      (click)="toggleForm()"
+    >
+      <span class="toolbar-toggle-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </span>
+      {{ showForm() ? 'Ocultar parámetros' : 'Mostrar parámetros' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="calculator-page__layout" [class.calculator-page__layout--form-hidden]="!showForm()">
+    @if (showForm()) {
+    <section class="panel">
+      <h2 class="panel__title">Parámetros de la simulación</h2>
+
+      <form (ngSubmit)="calculate()" class="form">
+        <div class="form-group">
+          <label for="annualRate">Rendimiento Anual <span class="form-label-legend">(%)</span></label>
+          <div class="input-with-icon">
+            <div class="input-with-suffix">
+              <input
+                id="annualRate"
+                type="number"
+                step="0.1"
+                [(ngModel)]="annualRate"
+                name="annualRate"
+                required
+              />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+            @if (!hasSecondaryRate) {
+              <button
+                type="button"
+                class="icon-button"
+                (click)="addSecondaryRate()"
+                title="Agregar segundo escenario"
+              >
+                +
+              </button>
+            }
+          </div>
+        </div>
+
+        @if (hasSecondaryRate) {
+          <div class="form-group">
+            <label for="annualRateSecondary">
+              Rendimiento Anual <span class="form-label-legend">(%)</span> <span class="form-label-legend">(escenario 2)</span>
+            </label>
+            <div class="input-with-icon">
+              <div class="input-with-suffix">
+                <input
+                  id="annualRateSecondary"
+                  type="number"
+                  step="0.1"
+                  [(ngModel)]="annualRateSecondary"
+                  name="annualRateSecondary"
+                  required
+                />
+                <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+              </div>
+              <button
+                type="button"
+                class="icon-button icon-button--danger"
+                (click)="removeSecondaryRate()"
+                title="Quitar segundo escenario"
+              >
+                −
+              </button>
+            </div>
+          </div>
+        }
+
+        <div class="form-group">
+          <label for="monthlyContribution">Aporte mensual inicial</label>
+          <input
+            id="monthlyContribution"
+            type="number"
+            [(ngModel)]="monthlyContribution"
+            name="monthlyContribution"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="years">Años</label>
+          <input
+            id="years"
+            type="number"
+            [(ngModel)]="years"
+            name="years"
+            required
+            min="1"
+          />
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input
+              type="checkbox"
+              [(ngModel)]="incrementEnabled"
+              name="incrementEnabled"
+            />
+            Incremento anual de la cuota <span class="form-label-legend">(IPC)</span>
+          </label>
+        </div>
+
+        @if (incrementEnabled) {
+          <div class="form-group">
+            <label for="incrementAnnualPercent">
+              Incremento Anual de la Cuota <span class="form-label-legend">(%)</span>
+            </label>
+            <div class="input-with-suffix">
+              <input
+                id="incrementAnnualPercent"
+                type="number"
+                step="0.1"
+                [(ngModel)]="incrementAnnualPercent"
+                name="incrementAnnualPercent"
+                required
+                min="0"
+              />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="maxMonthlyContribution">
+              Aporte mensual máximo <span class="form-label-legend">(tope)</span>
+            </label>
+            <input
+              id="maxMonthlyContribution"
+              type="number"
+              [(ngModel)]="maxMonthlyContribution"
+              name="maxMonthlyContribution"
+              min="0"
+              placeholder="Sin tope si se deja vacío"
+            />
+          </div>
+        }
+
+        <button type="submit" class="btn btn--primary">Calcular</button>
+      </form>
+    </section>
+    }
+
+    @if (rows.length) {
+      <section class="panel panel--results">
+        <div class="results">
+          <div class="results__summary">
+            <div class="summary-block">
+              <h3>Resumen final <span class="form-label-legend">(escenario {{ annualRate }}%)</span></h3>
+              <ul>
+                <li>
+                  <span>Capital aportado total:</span>
+                  <strong>
+                    {{ finalTotalContributed | currency : '' : '' : '1.0-0' }}
+                  </strong>
+                </li>
+                <li>
+                  <span>Intereses generados:</span>
+                  <strong>
+                    {{ finalInterestEarned | currency : '' : '' : '1.0-0' }}
+                  </strong>
+                </li>
+                <li>
+                  <span>Valor total acumulado:</span>
+                  <strong>
+                    {{ finalTotalBalance | currency : '' : '' : '1.0-0' }}
+                  </strong>
+                </li>
+              </ul>
+            </div>
+
+            @if (hasSecondaryRate) {
+              <div class="summary-block">
+                <h3>Resumen final <span class="form-label-legend">(escenario {{ annualRateSecondary }}%)</span></h3>
+                <ul>
+                  <li>
+                    <span>Capital aportado total:</span>
+                    <strong>
+                      {{ finalTotalContributed | currency : '' : '' : '1.0-0' }}
+                    </strong>
+                  </li>
+                  <li>
+                    <span>Intereses generados:</span>
+                    <strong>
+                      {{ finalInterestEarned2 | currency : '' : '' : '1.0-0' }}
+                    </strong>
+                  </li>
+                  <li>
+                    <span>Valor total acumulado:</span>
+                    <strong>
+                      {{ finalTotalBalance2 | currency : '' : '' : '1.0-0' }}
+                    </strong>
+                  </li>
+                </ul>
+              </div>
+            }
+          </div>
+
+          <div class="results__table">
+            <h3>Detalle por año</h3>
+
+            <app-accordion-item
+              title="Columnas visibles"
+              [expanded]="columnsAccordionOpen()"
+              (expandedChange)="columnsAccordionOpen.set($event)"
+            >
+              <div class="columns-config">
+                <label class="columns-config__item">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="displayColumns.monthly"
+                    name="colMonthly"
+                    class="fc-checkbox"
+                  />
+                  <span>Aporte mensual</span>
+                </label>
+                <label class="columns-config__item">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="displayColumns.yearly"
+                    name="colYearly"
+                    class="fc-checkbox"
+                  />
+                  <span>Ahorro del año</span>
+                </label>
+                <label class="columns-config__item">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="displayColumns.accumulated"
+                    name="colAccumulated"
+                    class="fc-checkbox"
+                  />
+                  <span>Capital acumulado</span>
+                </label>
+                <label class="columns-config__item">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="displayColumns.interest1"
+                    name="colInterest1"
+                    class="fc-checkbox"
+                  />
+                  <span>Intereses <span class="form-label-legend">({{ annualRate }}%)</span></span>
+                </label>
+                <label class="columns-config__item">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="displayColumns.total1"
+                    name="colTotal1"
+                    class="fc-checkbox"
+                  />
+                  <span>Total <span class="form-label-legend">({{ annualRate }}%)</span></span>
+                </label>
+                @if (hasSecondaryRate) {
+                  <label class="columns-config__item">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="displayColumns.interest2"
+                      name="colInterest2"
+                      class="fc-checkbox"
+                    />
+                    <span>Intereses <span class="form-label-legend">({{ annualRateSecondary }}%)</span></span>
+                  </label>
+                  <label class="columns-config__item">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="displayColumns.total2"
+                      name="colTotal2"
+                      class="fc-checkbox"
+                    />
+                    <span>Total <span class="form-label-legend">({{ annualRateSecondary }}%)</span></span>
+                  </label>
+                }
+              </div>
+            </app-accordion-item>
+
+            <app-data-table
+              [columns]="tableColumns"
+              [rows]="rows"
+              [trackByKey]="'year'"
+            />
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

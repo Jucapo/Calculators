@@ -1,0 +1,220 @@
+/* Layout principal: sidebar + contenido + footer */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+
+  &--resizing {
+    cursor: col-resize;
+    user-select: none;
+
+    .sidebar {
+      transition: none;
+    }
+  }
+}
+
+.sidebar {
+  position: relative;
+  width: 240px;
+  min-width: 240px;
+  min-height: 100vh;
+  background: var(--fc-color-bg-sidebar);
+  border-right: 1px solid var(--fc-color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  transition: width 0.2s ease;
+  flex-shrink: 0;
+
+  &--collapsed {
+    width: 56px !important;
+    min-width: 56px;
+
+    .sidebar__label {
+      display: none;
+    }
+
+    .sidebar__nav {
+      align-items: center;
+    }
+
+    .sidebar__link {
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      min-height: 2.5rem;
+    }
+  }
+
+  &__toggle {
+    flex-shrink: 0;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.25rem;
+    text-align: left;
+    color: var(--fc-color-text);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  &__toggle-icon {
+    display: inline-block;
+  }
+
+  &__nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0 0.5rem 1rem;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--fc-radius);
+    color: var(--fc-color-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.15s ease;
+    box-sizing: border-box;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    &--active {
+      background: var(--fc-color-primary);
+      color: white;
+
+      &:hover {
+        background: var(--fc-color-primary-hover);
+      }
+    }
+  }
+
+  &--collapsed .sidebar__link {
+    justify-content: center;
+  }
+
+  /* Estado activo cuando el sidebar está colapsado:
+     solo el icono lleva el fondo azul en forma casi cuadrada */
+  &--collapsed .sidebar__link--active {
+    background: transparent;
+    color: var(--fc-color-text);
+
+    .sidebar__icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.9rem;
+      background: var(--fc-color-primary);
+      color: #ffffff;
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    line-height: 0;
+
+    svg {
+      width: 1rem;
+      height: 1rem;
+      stroke: currentColor;
+    }
+  }
+
+  &__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: col-resize;
+    z-index: 1;
+
+    &:hover,
+    .app-layout--resizing & {
+      background: rgba(0, 0, 0, 0.08);
+    }
+  }
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-content {
+  flex: 1;
+  padding: 1rem 1.5rem 0 1.5rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .app-content {
+    padding: 1rem 0.75rem 0;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .app-content {
+    padding: 1.25rem 1rem 0;
+  }
+}
+
+.app-footer {
+  margin-top: auto;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--fc-color-border);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--fc-color-text-footer);
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 56px;
+
+    .sidebar__label {
+      display: none;
+    }
+
+    .sidebar__nav {
+      align-items: center;
+    }
+
+    .sidebar__link {
+      justify-content: center;
+    }
+
+    &--collapsed {
+      width: 48px;
+    }
+  }
+}

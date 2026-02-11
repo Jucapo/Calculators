@@ -1,55 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AccordionItemComponent } from '../../../shared/components/accordion/accordion-item.component';
+import { DataTableComponent, DataTableColumn } from '../../../shared/components/data-table/data-table.component';
 
 interface ProjectionRow {
   year: number;
   monthlyContribution: number;
   yearlyContribution: number;
   totalContributed: number;
-  // Escenario 1
   interestEarned1: number;
   totalBalance1: number;
-  // Escenario 2 (opcional)
   interestEarned2?: number | null;
   totalBalance2?: number | null;
 }
 
 @Component({
-  selector: 'app-investment-calculator',
+  selector: 'app-compound-interest',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './investment-calculator.html',
-  styleUrls: ['./investment-calculator.scss'],
+  imports: [CommonModule, FormsModule, AccordionItemComponent, DataTableComponent],
+  templateUrl: './compound-interest.component.html',
+  styleUrl: './compound-interest.component.scss',
 })
 export class InvestmentCalculatorComponent {
-  // Escenario 1
   annualRate = 5.5;
-  // Escenario 2
-  hasSecondaryRate = true;
+  hasSecondaryRate = false;
   annualRateSecondary = 10;
 
   monthlyContribution = 50000;
   years = 22;
 
-  // IPC
-  incrementEnabled = true;
+  incrementEnabled = false;
   incrementAnnualPercent = 5;
-  // Tope máximo para el aporte mensual
   maxMonthlyContribution: number | null = null;
 
   rows: ProjectionRow[] = [];
 
-  // Resumen escenario 1
   finalTotalContributed = 0;
   finalInterestEarned = 0;
   finalTotalBalance = 0;
-
-  // Resumen escenario 2
   finalInterestEarned2 = 0;
   finalTotalBalance2 = 0;
 
-  // Control de columnas visibles
+  // Mostrar/ocultar panel de parámetros
+  showForm = signal(true);
+
+  toggleForm(): void {
+    this.showForm.update((v) => !v);
+  }
+
   displayColumns = {
     monthly: true,
     yearly: true,
@@ -59,6 +58,37 @@ export class InvestmentCalculatorComponent {
     interest2: true,
     total2: true,
   };
+
+  /** Acordeón "Columnas visibles": abierto por defecto */
+  columnsAccordionOpen = signal(true);
+
+  get tableColumns(): DataTableColumn[] {
+    const cols: DataTableColumn[] = [
+      { key: 'year', label: 'Año', align: 'center', format: '1.0-0' },
+    ];
+    if (this.displayColumns.monthly) {
+      cols.push({ key: 'monthlyContribution', label: 'Aporte mensual<br/>del año', format: '1.0-0' });
+    }
+    if (this.displayColumns.yearly) {
+      cols.push({ key: 'yearlyContribution', label: 'Ahorro del año<br/>(12 meses)', format: '1.0-0' });
+    }
+    if (this.displayColumns.accumulated) {
+      cols.push({ key: 'totalContributed', label: 'Capital aportado<br/>acumulado', format: '1.0-0' });
+    }
+    if (this.displayColumns.interest1) {
+      cols.push({ key: 'interestEarned1', label: `Intereses<br/>generados<br/>(${this.annualRate}%)`, format: '1.0-0' });
+    }
+    if (this.displayColumns.total1) {
+      cols.push({ key: 'totalBalance1', label: `Total<br/>acumulado<br/>(${this.annualRate}%)`, format: '1.0-0' });
+    }
+    if (this.hasSecondaryRate && this.displayColumns.interest2) {
+      cols.push({ key: 'interestEarned2', label: `Intereses<br/>generados<br/>(${this.annualRateSecondary}%)`, format: '1.0-0' });
+    }
+    if (this.hasSecondaryRate && this.displayColumns.total2) {
+      cols.push({ key: 'totalBalance2', label: `Total<br/>acumulado<br/>(${this.annualRateSecondary}%)`, format: '1.0-0' });
+    }
+    return cols;
+  }
 
   addSecondaryRate(): void {
     this.hasSecondaryRate = true;
@@ -71,24 +101,18 @@ export class InvestmentCalculatorComponent {
   calculate(): void {
     this.rows = [];
 
-    // Escenario 1
     const rate1 = this.annualRate / 100;
     const monthlyRate1 = rate1 / 12;
-
-    // Escenario 2
     const rate2 = this.hasSecondaryRate ? this.annualRateSecondary / 100 : 0;
     const monthlyRate2 = this.hasSecondaryRate ? rate2 / 12 : 0;
-
     const baseMonthly = this.monthlyContribution;
     const incRate = this.incrementEnabled
       ? this.incrementAnnualPercent / 100
       : 0;
-
     const hasMax =
       this.incrementEnabled &&
       this.maxMonthlyContribution != null &&
       this.maxMonthlyContribution > 0;
-
     const totalYears = this.years;
 
     let balance1 = 0;
@@ -96,24 +120,16 @@ export class InvestmentCalculatorComponent {
     let totalContributed = 0;
 
     for (let year = 1; year <= totalYears; year++) {
-      // aporte mensual calculado por IPC
       let monthlyForYear = baseMonthly * Math.pow(1 + incRate, year - 1);
-
-      // aplicar tope máximo si corresponde
       if (hasMax && monthlyForYear > this.maxMonthlyContribution!) {
         monthlyForYear = this.maxMonthlyContribution!;
       }
-
       let yearlyContribution = 0;
 
       for (let month = 1; month <= 12; month++) {
         yearlyContribution += monthlyForYear;
         totalContributed += monthlyForYear;
-
-        // Escenario 1
         balance1 = (balance1 + monthlyForYear) * (1 + monthlyRate1);
-
-        // Escenario 2 (si está activo)
         if (this.hasSecondaryRate) {
           balance2 = (balance2 + monthlyForYear) * (1 + monthlyRate2);
         }
@@ -138,13 +154,9 @@ export class InvestmentCalculatorComponent {
 
     if (this.rows.length > 0) {
       const last = this.rows[this.rows.length - 1];
-
-      // Escenario 1
       this.finalTotalContributed = last.totalContributed;
       this.finalInterestEarned = last.interestEarned1;
       this.finalTotalBalance = last.totalBalance1;
-
-      // Escenario 2 (si está activo)
       if (
         this.hasSecondaryRate &&
         last.interestEarned2 != null &&

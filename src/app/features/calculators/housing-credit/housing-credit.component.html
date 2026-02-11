@@ -1,0 +1,116 @@
+<div class="mortgage-page">
+  <header class="mortgage-page__header">
+    <h1 class="mortgage-page__title">Simulador Crédito de Vivienda</h1>
+    <div class="mortgage-page__toolbar">
+      <button
+        type="button"
+        class="btn mortgage-page__toolbar-button"
+        [class.btn--primary]="!showForm()"
+        (click)="toggleForm()"
+      >
+        <span class="toolbar-toggle-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </span>
+        {{ showForm() ? 'Ocultar datos' : 'Mostrar datos' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="mortgage-page__layout" [class.mortgage-page__layout--form-hidden]="!showForm()">
+    @if (showForm()) {
+    <section class="panel">
+      <h2 class="panel__title">Datos del crédito</h2>
+
+      <form (ngSubmit)="calculate()" class="form">
+        <div class="form-group">
+          <label for="propertyValue">Valor del inmueble</label>
+          <input
+            id="propertyValue"
+            type="number"
+            [(ngModel)]="propertyValue"
+            name="propertyValue"
+            min="0"
+            step="100000"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="eaRate">Tasa de interés EA <span class="form-label-legend">(%)</span></label>
+          <div class="input-with-suffix">
+            <input
+              id="eaRate"
+              type="number"
+              [(ngModel)]="eaRate"
+              name="eaRate"
+              min="0"
+              step="0.1"
+            />
+            <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loanPercent">% a pedir prestado</label>
+          <div class="input-with-suffix">
+            <input
+              id="loanPercent"
+              type="number"
+              [(ngModel)]="loanPercent"
+              name="loanPercent"
+              min="0"
+              max="100"
+              step="1"
+            />
+            <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="years">Plazo <span class="form-label-legend">(años)</span></label>
+          <input
+            id="years"
+            type="number"
+            [(ngModel)]="years"
+            name="years"
+            min="1"
+            max="30"
+          />
+        </div>
+
+        <button type="submit" class="btn btn--primary">Calcular</button>
+      </form>
+    </section>
+    }
+
+    @if (rows.length) {
+      <section class="panel panel--results">
+        <div class="mortgage-results">
+          <div class="mortgage-results__summary">
+            <div class="summary-block">
+              <h3>Resumen</h3>
+              <ul>
+                <li><span>Cuota inicial:</span> <strong>{{ downPayment | number : '1.0-0' }}</strong></li>
+                <li><span>Monto a financiar:</span> <strong>{{ loanAmount | number : '1.0-0' }}</strong></li>
+                <li><span>Cuota mensual:</span> <strong>{{ monthlyPayment | number : '1.0-0' }}</strong></li>
+                <li><span>Total a pagar:</span> <strong>{{ totalPayment | number : '1.0-0' }}</strong></li>
+                <li><span>Intereses totales:</span> <strong>{{ totalInterest | number : '1.0-0' }}</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mortgage-results__table">
+            <h3>Plan de amortización</h3>
+            <app-data-table
+              [columns]="amortTableColumns"
+              [rows]="rows"
+              [trackByKey]="'month'"
+            />
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

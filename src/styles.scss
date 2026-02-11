@@ -1,1 +1,121 @@
-/* You can add global styles to this file, and also import other style files */
+/* ===== Tema global – Financial Calculators ===== */
+/* Paleta: azul oscuro tirando a morado (indigo) */
+:root {
+  --fc-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fc-color-primary: #4f46e5;
+  --fc-color-primary-hover: #4338ca;
+  --fc-color-primary-muted: #6366f1;
+  --fc-color-danger: #dc2626;
+  --fc-color-danger-hover: #b91c1c;
+  --fc-color-border: #e4e4e7;
+  --fc-color-border-input: #d4d4d8;
+  --fc-color-bg: #ffffff;
+  --fc-color-bg-muted: #fafafa;
+  --fc-color-bg-sidebar: #f4f4f5;
+  --fc-color-text: #18181b;
+  --fc-color-text-muted: #52525b;
+  --fc-color-text-footer: #71717a;
+  --fc-color-heading: #312e81;
+  --fc-color-heading-muted: #4338ca;
+  --fc-radius: 6px;
+  --fc-radius-lg: 10px;
+  --fc-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --fc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --fc-focus-ring: 0 0 0 2px rgba(79, 70, 229, 0.35);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--fc-font-family);
+  color: var(--fc-color-text);
+  background-color: var(--fc-color-bg-muted);
+  overflow-x: hidden;
+}
+
+/* Títulos con color del tema */
+h1, .fc-title-page {
+  color: var(--fc-color-heading);
+  font-weight: 700;
+}
+
+h2, .fc-title-section {
+  color: var(--fc-color-heading);
+  font-weight: 600;
+}
+
+h3, .fc-title-card {
+  color: var(--fc-color-heading-muted);
+  font-weight: 600;
+}
+
+/* Card reutilizable (clase global para uso sin componente) */
+.fc-card {
+  background: var(--fc-color-bg);
+  border-radius: var(--fc-radius-lg);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--fc-shadow);
+  border: 1px solid var(--fc-color-border);
+}
+
+.fc-card__title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--fc-color-heading-muted);
+}
+
+/* Botones compartidos (tema global) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  border-radius: var(--fc-radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  font-family: var(--fc-font-family);
+
+  &--primary {
+    background: var(--fc-color-primary);
+    color: white;
+
+    &:hover {
+      background: var(--fc-color-primary-hover);
+    }
+  }
+}
+
+/* Checkboxes: estado marcado con color del tema */
+input[type='checkbox'] {
+  accent-color: var(--fc-color-primary);
+}
+
+/* Regla: todo lo que va entre () en etiquetas debe usar .form-label-legend (más pequeño y gris) */
+.form-label-legend {
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--fc-color-text-muted);
+}
+
+/* Campo con sufijo % solo visual (el valor guardado sigue siendo el número) */
+.input-with-suffix {
+  position: relative;
+  display: block;
+
+  input {
+    padding-right: 2rem;
+  }
+}
+
+.input-with-suffix__suffix {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--fc-color-text-muted);
+  font-size: 0.9em;
+}

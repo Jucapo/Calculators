@@ -1,1 +1,70 @@
-<router-outlet></router-outlet>
+<div class="app-layout" [class.app-layout--resizing]="resizing()">
+  <aside
+    class="sidebar"
+    [class.sidebar--collapsed]="sidebarCollapsed()"
+    [style.width.px]="sidebarCollapsed() ? null : sidebarWidth()"
+  >
+    <button
+      type="button"
+      class="sidebar__toggle"
+      (click)="toggleSidebar()"
+      [attr.aria-label]="sidebarCollapsed() ? 'Expandir menú' : 'Comprimir menú'"
+    >
+      <span class="sidebar__toggle-icon">☰</span>
+    </button>
+    <nav class="sidebar__nav">
+      @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="sidebar__link--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="sidebar__link"
+        >
+          <span class="sidebar__icon" aria-hidden="true">
+            @switch (item.iconType) {
+              @case ('calculator') {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="2" width="16" height="20" rx="2"/>
+                  <path d="M8 6h8M8 10h8M8 14h4M8 18h8"/>
+                </svg>
+              }
+              @case ('home') {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              }
+              @case ('exchange') {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="17 1 21 5 17 9"/>
+                  <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                  <polyline points="7 23 3 19 7 15"/>
+                  <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                </svg>
+              }
+            }
+          </span>
+          @if (!sidebarCollapsed()) {
+            <span class="sidebar__label">{{ item.label }}</span>
+          }
+        </a>
+      }
+    </nav>
+    @if (!sidebarCollapsed()) {
+      <div
+        class="sidebar__resize-handle"
+        (mousedown)="startResize($event)"
+        role="separator"
+        aria-label="Redimensionar menú"
+      ></div>
+    }
+  </aside>
+  <main class="app-main">
+    <div class="app-content">
+      <router-outlet></router-outlet>
+    </div>
+    <footer class="app-footer">
+      <p>© 2026 Financial Calculators · v0.0.1 Beta · Developed by Jucapo</p>
+    </footer>
+  </main>
+</div>

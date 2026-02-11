@@ -1,0 +1,28 @@
+<div class="fc-table-wrapper" [style.max-height]="maxHeight()">
+  <table class="fc-table">
+    <thead>
+      <tr>
+        @for (col of columns(); track col.key) {
+          <th [class.fc-table__cell--right]="(col.align ?? 'right') === 'right'" [class.fc-table__cell--center]="col.align === 'center'" [class.fc-table__cell--left]="col.align === 'left'">
+            <span [innerHTML]="col.label"></span>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track trackByFn($index, row)) {
+        <tr>
+          @for (col of columns(); track col.key) {
+            <td [class.fc-table__cell--right]="(col.align ?? 'right') === 'right'" [class.fc-table__cell--center]="col.align === 'center'" [class.fc-table__cell--left]="col.align === 'left'">
+              @if (col.format != null) {
+                {{ $any(row)[col.key] | number : col.format }}
+              } @else {
+                {{ $any(row)[col.key] }}
+              }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

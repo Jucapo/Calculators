@@ -1,0 +1,26 @@
+<div class="fc-accordion">
+  <button
+    type="button"
+    class="fc-accordion__header"
+    [attr.aria-expanded]="expanded()"
+    [attr.aria-controls]="contentId"
+    [id]="headerId"
+    (click)="toggle()"
+  >
+    <span class="fc-accordion__title">{{ title() }}</span>
+    <span
+      class="fc-accordion__icon"
+      [class.fc-accordion__icon--expanded]="expanded()"
+      aria-hidden="true"
+    ></span>
+  </button>
+  <div
+    [id]="contentId"
+    class="fc-accordion__content"
+    [class.fc-accordion__content--open]="expanded()"
+    role="region"
+    [attr.aria-labelledby]="headerId"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

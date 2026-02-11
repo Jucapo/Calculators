@@ -1,0 +1,76 @@
+<div class="converter-page">
+  <h1 class="converter-page__title">Convertidor de Tasas de Interés</h1>
+  <p class="converter-page__intro">
+    Convierte tasas vencidas entre nominal (anual/mensual) y efectivo (anual/mensual).
+    Útil para planes de amortización y comparar ofertas.
+  </p>
+
+  <div class="converter-card">
+    <p class="converter-card__label">¿Qué tasa tienes?</p>
+    <div class="rate-type-select">
+      @for (t of rateTypes; track t) {
+        <label class="rate-type-option" [class.rate-type-option--active]="inputType() === t">
+          <input
+            type="radio"
+            name="rateType"
+            [value]="t"
+            [checked]="inputType() === t"
+            (change)="setInputType(t)"
+          />
+          <span class="rate-type-option__abbr">{{ t }}</span>
+          <span class="rate-type-option__name">{{ rateLabels[t] }}</span>
+        </label>
+      }
+    </div>
+
+    <div class="converter-card__input-row">
+      <label for="rateInput" class="converter-card__input-label">Tasa <span class="form-label-legend">(en %)</span></label>
+      <div class="input-with-suffix">
+        <input
+          id="rateInput"
+          type="number"
+          step="0.01"
+          [ngModel]="inputValue()"
+          (ngModelChange)="onInputChange($event)"
+          class="converter-card__input"
+          placeholder="0"
+        />
+        <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+      </div>
+    </div>
+
+    <div class="converter-card__results">
+      <p class="converter-card__results-title">Equivale a:</p>
+      <div class="results-grid">
+        @for (r of otherRates(); track r.type) {
+          <div class="result-item">
+            <span class="result-item__abbr">{{ r.type }}</span>
+            <span class="result-item__name">{{ r.label }}</span>
+            <span class="result-item__value">{{ r.value | number : '1.2-4' }}%</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="converter-page__legend">
+    <div class="converter-page__legend-col">
+      <p class="converter-page__legend-title">Leyenda</p>
+      <ul>
+        <li><strong>NA</strong> Nominal anual</li>
+        <li><strong>NM</strong> Nominal mensual</li>
+        <li><strong>EA</strong> Efectivo anual</li>
+        <li><strong>EM</strong> Efectivo mensual</li>
+      </ul>
+    </div>
+    <div class="converter-page__legend-col converter-page__legend-explanation">
+      <p class="converter-page__legend-title">Diferencia entre tasa nominal y efectiva</p>
+      <p>
+        <strong>Nominal:</strong> es la tasa que se anuncia (ej. 12% NA pagadera mensualmente). No refleja el interés real pagado en el año porque no considera la capitalización.
+      </p>
+      <p>
+        <strong>Efectiva:</strong> es la tasa que realmente se paga o se gana en el periodo, ya incluye la capitalización. Por eso una misma tasa nominal puede equivaler a distintas efectivas según la frecuencia de pago.
+      </p>
+    </div>
+  </div>
+</div>
