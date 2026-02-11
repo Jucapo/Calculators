@@ -27,14 +27,15 @@
       <form (ngSubmit)="calculate()" class="form">
         <div class="form-group">
           <label for="propertyValue">Valor del inmueble</label>
-          <input
-            id="propertyValue"
-            type="number"
-            [(ngModel)]="propertyValue"
-            name="propertyValue"
-            min="0"
-            step="100000"
-          />
+          <div class="input-with-suffix">
+            <input
+              id="propertyValue"
+              appCurrencyInput
+              [(ngModel)]="propertyValue"
+              name="propertyValue"
+            />
+            <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+          </div>
         </div>
 
         <div class="form-group">
@@ -92,11 +93,11 @@
             <div class="summary-block">
               <h3>Resumen</h3>
               <ul>
-                <li><span>Cuota inicial:</span> <strong>{{ downPayment | number : '1.0-0' }}</strong></li>
-                <li><span>Monto a financiar:</span> <strong>{{ loanAmount | number : '1.0-0' }}</strong></li>
-                <li><span>Cuota mensual:</span> <strong>{{ monthlyPayment | number : '1.0-0' }}</strong></li>
-                <li><span>Total a pagar:</span> <strong>{{ totalPayment | number : '1.0-0' }}</strong></li>
-                <li><span>Intereses totales:</span> <strong>{{ totalInterest | number : '1.0-0' }}</strong></li>
+                <li><span>Cuota inicial:</span> <strong>{{ downPayment | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Monto a financiar:</span> <strong>{{ loanAmount | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Cuota mensual:</span> <strong>{{ monthlyPayment | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Total a pagar:</span> <strong>{{ totalPayment | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Intereses totales:</span> <strong>{{ totalInterest | currency : 'COP' : '' : '1.0-0' }}</strong></li>
               </ul>
             </div>
           </div>

@@ -1,0 +1,49 @@
+<div class="calc-page">
+  <header class="calc-page__header">
+    <h1 class="calc-page__title">Tasa Real</h1>
+    <div class="calc-page__toolbar">
+      <button type="button" class="btn calc-page__toolbar-button" [class.btn--primary]="!showForm()" (click)="toggleForm()">
+        <span class="toolbar-toggle-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        {{ showForm() ? 'Ocultar datos' : 'Mostrar datos' }}
+      </button>
+    </div>
+  </header>
+  <div class="calc-page__layout" [class.calc-page__layout--form-hidden]="!showForm()">
+    @if (showForm()) {
+      <section class="panel">
+        <h2 class="panel__title">Rendimiento nominal e inflación</h2>
+        <form (ngSubmit)="calculate()" class="form">
+          <div class="form-group">
+            <label for="nominalRate">Tasa nominal <span class="form-label-legend">(%)</span></label>
+            <div class="input-with-suffix">
+              <input id="nominalRate" type="number" [(ngModel)]="nominalRate" name="nominalRate" step="0.1" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inflationRate">Inflación anual <span class="form-label-legend">(%)</span></label>
+            <div class="input-with-suffix">
+              <input id="inflationRate" type="number" [(ngModel)]="inflationRate" name="inflationRate" step="0.1" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary">Calcular tasa real</button>
+        </form>
+      </section>
+    }
+    @if (true) {
+      <section class="panel panel--results">
+        <div class="results">
+          <div class="results__summary">
+            <div class="summary-block">
+              <h3>Tasa real</h3>
+              <p>Rendimiento real aproximado (descontando inflación):</p>
+              <p class="summary-block__big">{{ (realRate * 100) | number : '1.2-2' }}%</p>
+              <p class="form-label-legend">Fórmula: (1 + nominal) / (1 + inflación) - 1</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

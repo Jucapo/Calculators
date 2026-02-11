@@ -7,41 +7,39 @@ import { CurrencyInputDirective } from '../../../shared/directives/currency-inpu
 interface AmortRow {
   month: number;
   payment: number;
+  extra: number;
   interest: number;
   principal: number;
   balance: number;
 }
 
 @Component({
-  selector: 'app-housing-credit',
+  selector: 'app-credit-payment-plan',
   standalone: true,
   imports: [CommonModule, FormsModule, DataTableComponent, CurrencyInputDirective],
-  templateUrl: './housing-credit.component.html',
-  styleUrl: './housing-credit.component.scss',
+  templateUrl: './credit-payment-plan.component.html',
+  styleUrl: './credit-payment-plan.component.scss',
 })
-export class HousingCreditComponent {
-  /** Valor del inmueble */
-  propertyValue = 300_000_000;
-  /** Tasa de interés efectiva anual (%) */
+export class CreditPaymentPlanComponent {
+  loanAmount = 50_000_000;
   eaRate = 12;
-  /** Porcentaje a financiar (0-100) */
-  loanPercent = 80;
-  /** Plazo en años */
   years = 15;
+  /** Abono extra fijo mensual a capital (opcional). */
+  extraPayment = 0;
 
   rows: AmortRow[] = [];
+  monthsToPay = 0;
   totalPayment = 0;
   totalInterest = 0;
-  loanAmount = 0;
   monthlyPayment = 0;
-  downPayment = 0;
+  interestWithoutExtra = 0;
 
-  // Mostrar/ocultar panel de datos
   showForm = signal(true);
 
-  readonly amortTableColumns: DataTableColumn[] = [
+  readonly tableColumns: DataTableColumn[] = [
     { key: 'month', label: 'Mes', align: 'center', format: '1.0-0' },
     { key: 'payment', label: 'Cuota', format: '1.0-0', currency: 'COP' },
+    { key: 'extra', label: 'Abono extra', format: '1.0-0', currency: 'COP' },
     { key: 'interest', label: 'Interés', format: '1.0-0', currency: 'COP' },
     { key: 'principal', label: 'Capital', format: '1.0-0', currency: 'COP' },
     { key: 'balance', label: 'Saldo', format: '1.0-0', currency: 'COP' },
@@ -53,41 +51,55 @@ export class HousingCreditComponent {
 
   calculate(): void {
     this.rows = [];
-    const val = this.propertyValue || 0;
-    const pct = Math.min(100, Math.max(0, this.loanPercent || 0)) / 100;
-    this.loanAmount = val * pct;
-    this.downPayment = Math.max(0, val - this.loanAmount);
-    const yearsCount = Math.max(1, Math.min(30, this.years || 1));
-    const n = yearsCount * 12;
+    const P = Math.max(0, this.loanAmount || 0);
+    const yearsCount = Math.max(1, Math.min(40, this.years || 1));
+    const nOriginal = yearsCount * 12;
     const ea = (this.eaRate || 0) / 100;
     const monthlyRate = Math.pow(1 + ea, 1 / 12) - 1;
+    const extra = Math.max(0, this.extraPayment || 0);
 
-    if (this.loanAmount <= 0 || n <= 0) {
+    if (P <= 0) {
       this.monthlyPayment = 0;
+      this.monthsToPay = 0;
       this.totalPayment = 0;
       this.totalInterest = 0;
-      this.downPayment = 0;
+      this.interestWithoutExtra = 0;
       return;
     }
 
-    // Cuota fija (sistema francés): PMT = P * r * (1+r)^n / ((1+r)^n - 1)
-    const factor = Math.pow(1 + monthlyRate, n);
-    this.monthlyPayment = this.loanAmount * (monthlyRate * factor) / (factor - 1);
-    this.totalPayment = this.monthlyPayment * n;
-    this.totalInterest = this.totalPayment - this.loanAmount;
+    const factor = Math.pow(1 + monthlyRate, nOriginal);
+    this.monthlyPayment = (P * (monthlyRate * factor)) / (factor - 1);
+    this.interestWithoutExtra = this.monthlyPayment * nOriginal - P;
 
-    let balance = this.loanAmount;
-    for (let month = 1; month <= n; month++) {
+    let balance = P;
+    let month = 0;
+    let totalPaid = 0;
+    let totalInt = 0;
+
+    while (balance > 0.01 && month < 600) {
+      month++;
       const interest = balance * monthlyRate;
-      const principal = this.monthlyPayment - interest;
+      let principal = this.monthlyPayment - interest;
+      if (principal > balance) principal = balance;
+      const thisExtra = Math.min(extra, Math.max(0, balance - principal));
+      principal += thisExtra;
+      if (principal > balance) principal = balance;
       balance = Math.max(0, balance - principal);
+      totalPaid += this.monthlyPayment + thisExtra;
+      totalInt += interest;
+
       this.rows.push({
         month,
         payment: this.monthlyPayment,
+        extra: thisExtra,
         interest,
         principal,
         balance,
       });
     }
+
+    this.monthsToPay = month;
+    this.totalPayment = totalPaid;
+    this.totalInterest = totalInt;
   }
 }

@@ -1,0 +1,62 @@
+<div class="calc-page">
+  <header class="calc-page__header">
+    <h1 class="calc-page__title">Fondo de Emergencias</h1>
+    <div class="calc-page__toolbar">
+      <button type="button" class="btn calc-page__toolbar-button" [class.btn--primary]="!showForm()" (click)="toggleForm()">
+        <span class="toolbar-toggle-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        {{ showForm() ? 'Ocultar datos' : 'Mostrar datos' }}
+      </button>
+    </div>
+  </header>
+  <div class="calc-page__layout" [class.calc-page__layout--form-hidden]="!showForm()">
+    @if (showForm()) {
+      <section class="panel">
+        <h2 class="panel__title">Datos</h2>
+        <form (ngSubmit)="calculate()" class="form">
+          <div class="form-group">
+            <label for="monthsOfExpenses">Meses de gastos a cubrir</label>
+            <input id="monthsOfExpenses" type="number" [(ngModel)]="monthsOfExpenses" name="monthsOfExpenses" min="1" max="24" />
+          </div>
+          <div class="form-group">
+            <label for="monthlyExpenses">Gastos mensuales</label>
+            <div class="input-with-suffix">
+              <input id="monthlyExpenses" appCurrencyInput [(ngModel)]="monthlyExpenses" name="monthlyExpenses" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="currentSavings">Ahorro actual</label>
+            <div class="input-with-suffix">
+              <input id="currentSavings" appCurrencyInput [(ngModel)]="currentSavings" name="currentSavings" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="monthlyContribution">Ahorro mensual para el fondo</label>
+            <div class="input-with-suffix">
+              <input id="monthlyContribution" appCurrencyInput [(ngModel)]="monthlyContribution" name="monthlyContribution" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary">Calcular</button>
+        </form>
+      </section>
+    }
+    @if (targetAmount > 0) {
+      <section class="panel panel--results">
+        <div class="results">
+          <div class="results__summary">
+            <div class="summary-block">
+              <h3>Meta del fondo</h3>
+              <ul>
+                <li><span>Monto objetivo:</span> <strong>{{ targetAmount | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Meses para alcanzarlo:</span> <strong>{{ monthsToReach }}</strong></li>
+                <li><span>Falta por ahorrar:</span> <strong>{{ (targetAmount - currentSavings) | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

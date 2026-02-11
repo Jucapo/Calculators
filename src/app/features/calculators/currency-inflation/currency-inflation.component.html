@@ -1,0 +1,72 @@
+<div class="calc-page">
+  <header class="calc-page__header">
+    <h1 class="calc-page__title">Dolarización e Inflación</h1>
+    <div class="calc-page__toolbar">
+      <button type="button" class="btn calc-page__toolbar-button" [class.btn--primary]="!showForm()" (click)="toggleForm()">
+        <span class="toolbar-toggle-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        {{ showForm() ? 'Ocultar datos' : 'Mostrar datos' }}
+      </button>
+    </div>
+  </header>
+  <div class="calc-page__layout" [class.calc-page__layout--form-hidden]="!showForm()">
+    @if (showForm()) {
+      <section class="panel">
+        <h2 class="panel__title">Conversión y proyección</h2>
+        <form (ngSubmit)="calculate()" class="form">
+          <div class="form-group">
+            <label for="amountCop">Monto en COP</label>
+            <div class="input-with-suffix">
+              <input id="amountCop" appCurrencyInput [(ngModel)]="amountCop" name="amountCop" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="exchangeRateToday">TRM hoy <span class="form-label-legend">(COP por USD)</span></label>
+            <input id="exchangeRateToday" type="number" [(ngModel)]="exchangeRateToday" name="exchangeRateToday" min="0.01" step="1" />
+          </div>
+          <div class="form-group">
+            <label for="inflationCop">Inflación anual COP <span class="form-label-legend">(%)</span></label>
+            <div class="input-with-suffix">
+              <input id="inflationCop" type="number" [(ngModel)]="inflationCop" name="inflationCop" min="0" step="0.1" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inflationUsd">Inflación anual USD <span class="form-label-legend">(%)</span></label>
+            <div class="input-with-suffix">
+              <input id="inflationUsd" type="number" [(ngModel)]="inflationUsd" name="inflationUsd" min="0" step="0.1" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="years">Dentro de <span class="form-label-legend">(años)</span></label>
+            <input id="years" type="number" [(ngModel)]="years" name="years" min="0" step="1" />
+          </div>
+          <button type="submit" class="btn btn--primary">Calcular</button>
+        </form>
+      </section>
+    }
+    @if (equivalentUsdToday > 0) {
+      <section class="panel panel--results">
+        <div class="results">
+          <div class="results__summary">
+            <div class="summary-block">
+              <h3>Hoy</h3>
+              <ul>
+                <li><span>Equivalente en USD:</span> <strong>{{ equivalentUsdToday | currency : 'USD' : '' : '1.2-2' }}</strong></li>
+              </ul>
+            </div>
+            <div class="summary-block">
+              <h3>En {{ years }} años</h3>
+              <ul>
+                <li><span>Mismo monto en COP (con inflación COP):</span> <strong>{{ equivalentCopFuture | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Mismo poder en USD (con inflación USD):</span> <strong>{{ equivalentUsdFuture | currency : 'USD' : '' : '1.2-2' }}</strong></li>
+                <li><span>Poder adquisitivo de {{ amountCop | currency : 'COP' : '' : '1.0-0' }} hoy, en {{ years }} años:</span> <strong>{{ purchasingPowerCop | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

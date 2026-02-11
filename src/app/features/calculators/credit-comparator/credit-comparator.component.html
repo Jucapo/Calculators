@@ -1,0 +1,68 @@
+<div class="calc-page">
+  <header class="calc-page__header">
+    <h1 class="calc-page__title">Comparador de Créditos</h1>
+  </header>
+  <div class="calc-page__layout">
+    <section class="panel panel--offers">
+      <app-accordion-item
+        title="Ofertas a comparar"
+        [expanded]="offersAccordionOpen()"
+        (expandedChange)="offersAccordionOpen.set($event)"
+      >
+        <form (ngSubmit)="calculate()" class="form">
+          @for (opt of options; track $index) {
+            <div class="comparator-row">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" [(ngModel)]="opt.name" [name]="'name' + $index" />
+              </div>
+              <div class="form-group">
+                <label>Monto</label>
+                <div class="input-with-suffix">
+                  <input appCurrencyInput [(ngModel)]="opt.amount" [name]="'amount' + $index" />
+                  <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Tasa EA <span class="form-label-legend">(%)</span></label>
+                <div class="input-with-suffix">
+                  <input type="number" [(ngModel)]="opt.rate" [name]="'rate' + $index" min="0" step="0.1" />
+                  <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Plazo <span class="form-label-legend">(años)</span></label>
+                <input type="number" [(ngModel)]="opt.years" [name]="'years' + $index" min="1" max="30" />
+              </div>
+              <button type="button" class="icon-button icon-button--danger" (click)="removeOption($index)" [disabled]="options.length === 1" title="Quitar oferta" aria-label="Quitar oferta">−</button>
+            </div>
+          }
+          <div class="comparator-row comparator-row--add">
+            <button type="button" class="icon-button" (click)="addOption()" title="Añadir oferta" aria-label="Añadir oferta">+</button>
+          </div>
+          <button type="submit" class="btn btn--primary">Comparar</button>
+        </form>
+      </app-accordion-item>
+    </section>
+
+    @if (results.length) {
+      <section class="panel panel--results">
+        <h2 class="panel__title">Resultado de la comparación</h2>
+        <div class="results">
+          <div class="results__summary comparison-grid">
+            @for (r of results; track r.name) {
+              <div class="summary-block">
+                <h3>{{ r.name }}</h3>
+                <ul>
+                  <li><span>Cuota mensual:</span> <strong>{{ r.monthlyPayment | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                  <li><span>Total a pagar:</span> <strong>{{ r.totalPayment | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                  <li><span>Intereses:</span> <strong>{{ r.totalInterest | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                </ul>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

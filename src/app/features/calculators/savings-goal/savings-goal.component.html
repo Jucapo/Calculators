@@ -1,0 +1,66 @@
+<div class="calc-page">
+  <header class="calc-page__header">
+    <h1 class="calc-page__title">Meta de Ahorro</h1>
+    <div class="calc-page__toolbar">
+      <button type="button" class="btn calc-page__toolbar-button" [class.btn--primary]="!showForm()" (click)="toggleForm()">
+        <span class="toolbar-toggle-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        {{ showForm() ? 'Ocultar datos' : 'Mostrar datos' }}
+      </button>
+    </div>
+  </header>
+  <div class="calc-page__layout" [class.calc-page__layout--form-hidden]="!showForm()">
+    @if (showForm()) {
+      <section class="panel">
+        <h2 class="panel__title">Datos</h2>
+        <form (ngSubmit)="calculate()" class="form">
+          <div class="form-group">
+            <label for="goalAmount">Meta de ahorro</label>
+            <div class="input-with-suffix">
+              <input id="goalAmount" appCurrencyInput [(ngModel)]="goalAmount" name="goalAmount" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="currentSavings">Ahorro actual</label>
+            <div class="input-with-suffix">
+              <input id="currentSavings" appCurrencyInput [(ngModel)]="currentSavings" name="currentSavings" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="monthlyContribution">Aporte mensual</label>
+            <div class="input-with-suffix">
+              <input id="monthlyContribution" appCurrencyInput [(ngModel)]="monthlyContribution" name="monthlyContribution" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="annualRate">Rendimiento Anual <span class="form-label-legend">(%)</span></label>
+            <div class="input-with-suffix">
+              <input id="annualRate" type="number" [(ngModel)]="annualRate" name="annualRate" min="0" step="0.1" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary">Calcular</button>
+        </form>
+      </section>
+    }
+    @if (monthsToGoal > 0 && monthsToGoal < 999) {
+      <section class="panel panel--results">
+        <div class="results">
+          <div class="results__summary">
+            <div class="summary-block">
+              <h3>Resultado</h3>
+              <ul>
+                <li><span>Meses para alcanzar la meta:</span> <strong>{{ monthsToGoal }}</strong></li>
+                <li><span>Años aproximados:</span> <strong>{{ (monthsToGoal / 12) | number : '1.1-1' }}</strong></li>
+                <li><span>Total aportado:</span> <strong>{{ totalContributions | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Intereses generados:</span> <strong>{{ interestEarned | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

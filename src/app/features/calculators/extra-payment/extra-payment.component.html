@@ -1,0 +1,68 @@
+<div class="calc-page">
+  <header class="calc-page__header">
+    <h1 class="calc-page__title">Amortización con Abono Extra</h1>
+    <div class="calc-page__toolbar">
+      <button type="button" class="btn calc-page__toolbar-button" [class.btn--primary]="!showForm()" (click)="toggleForm()">
+        <span class="toolbar-toggle-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        {{ showForm() ? 'Ocultar datos' : 'Mostrar datos' }}
+      </button>
+    </div>
+  </header>
+  <div class="calc-page__layout" [class.calc-page__layout--form-hidden]="!showForm()">
+    @if (showForm()) {
+      <section class="panel">
+        <h2 class="panel__title">Crédito y abono extra</h2>
+        <form (ngSubmit)="calculate()" class="form">
+          <div class="form-group">
+            <label for="loanAmount">Monto del crédito</label>
+            <div class="input-with-suffix">
+              <input id="loanAmount" appCurrencyInput [(ngModel)]="loanAmount" name="loanAmount" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="eaRate">Tasa EA <span class="form-label-legend">(%)</span></label>
+            <div class="input-with-suffix">
+              <input id="eaRate" type="number" [(ngModel)]="eaRate" name="eaRate" min="0" step="0.1" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="years">Plazo <span class="form-label-legend">(años)</span></label>
+            <input id="years" type="number" [(ngModel)]="years" name="years" min="1" max="40" />
+          </div>
+          <div class="form-group">
+            <label for="extraMonthly">Abono extra mensual a capital</label>
+            <div class="input-with-suffix">
+              <input id="extraMonthly" appCurrencyInput [(ngModel)]="extraMonthly" name="extraMonthly" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary">Calcular</button>
+        </form>
+      </section>
+    }
+    @if (rows.length) {
+      <section class="panel panel--results">
+        <div class="results">
+          <div class="results__summary">
+            <div class="summary-block">
+              <h3>Resumen</h3>
+              <ul>
+                <li><span>Cuota mensual:</span> <strong>{{ monthlyPayment | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Meses para pagar:</span> <strong>{{ monthsToPay }}</strong></li>
+                <li><span>Intereses con abono extra:</span> <strong>{{ totalInterest | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Intereses sin abono extra:</span> <strong>{{ totalWithoutExtra | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+                <li><span>Ahorro:</span> <strong>{{ (totalWithoutExtra - totalInterest) | currency : 'COP' : '' : '1.0-0' }}</strong></li>
+              </ul>
+            </div>
+          </div>
+          <div class="results__table">
+            <h3>Plan de amortización</h3>
+            <app-data-table [columns]="tableColumns" [rows]="rows" [trackByKey]="'month'" />
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

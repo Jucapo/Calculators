@@ -1,0 +1,73 @@
+<div class="calc-page">
+  <header class="calc-page__header">
+    <h1 class="calc-page__title">Inflación y Poder Adquisitivo</h1>
+    <div class="calc-page__toolbar">
+      <button type="button" class="btn calc-page__toolbar-button" [class.btn--primary]="!showForm()" (click)="toggleForm()">
+        <span class="toolbar-toggle-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        {{ showForm() ? 'Ocultar datos' : 'Mostrar datos' }}
+      </button>
+    </div>
+  </header>
+  <div class="calc-page__layout" [class.calc-page__layout--form-hidden]="!showForm()">
+    @if (showForm()) {
+      <section class="panel">
+        <h2 class="panel__title">Proyección de inflación</h2>
+        <form (ngSubmit)="calculate()" class="form">
+          <div class="form-group">
+            <label for="amountToday">Valor de hoy</label>
+            <div class="input-with-suffix">
+              <input id="amountToday" appCurrencyInput [(ngModel)]="amountToday" name="amountToday" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inflationPercent">Inflación anual <span class="form-label-legend">(%)</span></label>
+            <div class="input-with-suffix">
+              <input id="inflationPercent" type="number" [(ngModel)]="inflationPercent" name="inflationPercent" min="0" step="0.1" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="years">Dentro de <span class="form-label-legend">(años)</span></label>
+            <input id="years" type="number" [(ngModel)]="years" name="years" min="0" step="1" />
+          </div>
+          <button type="submit" class="btn btn--primary">Calcular valor futuro</button>
+        </form>
+        <hr />
+        <h3 class="panel__subtitle">¿Cuánto equivale un valor futuro hoy?</h3>
+        <form (ngSubmit)="calculate()" class="form">
+          <div class="form-group">
+            <label for="futureAmount">Valor futuro</label>
+            <div class="input-with-suffix">
+              <input id="futureAmount" appCurrencyInput [(ngModel)]="futureAmount" name="futureAmount" />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary">Equivalente hoy</button>
+        </form>
+      </section>
+    }
+    @if (futureValue > 0 || equivalentToday > 0) {
+      <section class="panel panel--results">
+        <div class="results">
+          <div class="results__summary">
+            @if (futureValue > 0) {
+              <div class="summary-block">
+                <h3>Valor futuro</h3>
+                <p>{{ amountToday | currency : 'COP' : '' : '1.0-0' }} con {{ inflationPercent }}% anual en {{ years }} años equivale a:</p>
+                <p class="summary-block__big">{{ futureValue | currency : 'COP' : '' : '1.0-0' }}</p>
+              </div>
+            }
+            @if (equivalentToday > 0) {
+              <div class="summary-block">
+                <h3>Equivalente hoy</h3>
+                <p>{{ futureAmount | currency : 'COP' : '' : '1.0-0' }} en {{ years }} años con {{ inflationPercent }}% inflación equivale hoy a:</p>
+                <p class="summary-block__big">{{ equivalentToday | currency : 'COP' : '' : '1.0-0' }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+</div>

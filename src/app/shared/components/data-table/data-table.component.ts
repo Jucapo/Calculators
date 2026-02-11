@@ -10,6 +10,8 @@ export interface DataTableColumn {
   align?: 'left' | 'right' | 'center';
   /** Formato para el pipe number (ej. '1.0-0', '1.2-4'). Si no se define, se muestra el valor sin formatear */
   format?: string;
+  /** Código de moneda (ej. 'COP', 'USD'). Si se define, se usa pipe currency en lugar de number */
+  currency?: string;
 }
 
 @Component({

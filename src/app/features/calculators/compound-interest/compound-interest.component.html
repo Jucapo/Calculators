@@ -83,13 +83,16 @@
 
         <div class="form-group">
           <label for="monthlyContribution">Aporte mensual inicial</label>
-          <input
-            id="monthlyContribution"
-            type="number"
-            [(ngModel)]="monthlyContribution"
-            name="monthlyContribution"
-            required
-          />
+          <div class="input-with-suffix">
+            <input
+              id="monthlyContribution"
+              appCurrencyInput
+              [(ngModel)]="monthlyContribution"
+              name="monthlyContribution"
+              required
+            />
+            <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+          </div>
         </div>
 
         <div class="form-group">
@@ -138,14 +141,16 @@
             <label for="maxMonthlyContribution">
               Aporte mensual máximo <span class="form-label-legend">(tope)</span>
             </label>
-            <input
-              id="maxMonthlyContribution"
-              type="number"
-              [(ngModel)]="maxMonthlyContribution"
-              name="maxMonthlyContribution"
-              min="0"
-              placeholder="Sin tope si se deja vacío"
-            />
+            <div class="input-with-suffix">
+              <input
+                id="maxMonthlyContribution"
+                appCurrencyInput
+                [(ngModel)]="maxMonthlyContribution"
+                name="maxMonthlyContribution"
+                placeholder="Sin tope si se deja vacío"
+              />
+              <span class="input-with-suffix__suffix" aria-hidden="true">$</span>
+            </div>
           </div>
         }
 
@@ -164,19 +169,19 @@
                 <li>
                   <span>Capital aportado total:</span>
                   <strong>
-                    {{ finalTotalContributed | currency : '' : '' : '1.0-0' }}
+                    {{ finalTotalContributed | currency : 'COP' : '' : '1.0-0' }}
                   </strong>
                 </li>
                 <li>
                   <span>Intereses generados:</span>
                   <strong>
-                    {{ finalInterestEarned | currency : '' : '' : '1.0-0' }}
+                    {{ finalInterestEarned | currency : 'COP' : '' : '1.0-0' }}
                   </strong>
                 </li>
                 <li>
                   <span>Valor total acumulado:</span>
                   <strong>
-                    {{ finalTotalBalance | currency : '' : '' : '1.0-0' }}
+                    {{ finalTotalBalance | currency : 'COP' : '' : '1.0-0' }}
                   </strong>
                 </li>
               </ul>
@@ -189,19 +194,19 @@
                   <li>
                     <span>Capital aportado total:</span>
                     <strong>
-                      {{ finalTotalContributed | currency : '' : '' : '1.0-0' }}
+                      {{ finalTotalContributed | currency : 'COP' : '' : '1.0-0' }}
                     </strong>
                   </li>
                   <li>
                     <span>Intereses generados:</span>
                     <strong>
-                      {{ finalInterestEarned2 | currency : '' : '' : '1.0-0' }}
+                      {{ finalInterestEarned2 | currency : 'COP' : '' : '1.0-0' }}
                     </strong>
                   </li>
                   <li>
                     <span>Valor total acumulado:</span>
                     <strong>
-                      {{ finalTotalBalance2 | currency : '' : '' : '1.0-0' }}
+                      {{ finalTotalBalance2 | currency : 'COP' : '' : '1.0-0' }}
                     </strong>
                   </li>
                 </ul>

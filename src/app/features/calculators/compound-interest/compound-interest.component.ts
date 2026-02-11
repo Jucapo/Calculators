@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AccordionItemComponent } from '../../../shared/components/accordion/accordion-item.component';
 import { DataTableComponent, DataTableColumn } from '../../../shared/components/data-table/data-table.component';
+import { CurrencyInputDirective } from '../../../shared/directives/currency-input.directive';
 
 interface ProjectionRow {
   year: number;
@@ -18,7 +19,7 @@ interface ProjectionRow {
 @Component({
   selector: 'app-compound-interest',
   standalone: true,
-  imports: [CommonModule, FormsModule, AccordionItemComponent, DataTableComponent],
+  imports: [CommonModule, FormsModule, AccordionItemComponent, DataTableComponent, CurrencyInputDirective],
   templateUrl: './compound-interest.component.html',
   styleUrl: './compound-interest.component.scss',
 })
@@ -67,25 +68,25 @@ export class InvestmentCalculatorComponent {
       { key: 'year', label: 'Año', align: 'center', format: '1.0-0' },
     ];
     if (this.displayColumns.monthly) {
-      cols.push({ key: 'monthlyContribution', label: 'Aporte mensual<br/>del año', format: '1.0-0' });
+      cols.push({ key: 'monthlyContribution', label: 'Aporte mensual<br/>del año', format: '1.0-0', currency: 'COP' });
     }
     if (this.displayColumns.yearly) {
-      cols.push({ key: 'yearlyContribution', label: 'Ahorro del año<br/>(12 meses)', format: '1.0-0' });
+      cols.push({ key: 'yearlyContribution', label: 'Ahorro del año<br/>(12 meses)', format: '1.0-0', currency: 'COP' });
     }
     if (this.displayColumns.accumulated) {
-      cols.push({ key: 'totalContributed', label: 'Capital aportado<br/>acumulado', format: '1.0-0' });
+      cols.push({ key: 'totalContributed', label: 'Capital aportado<br/>acumulado', format: '1.0-0', currency: 'COP' });
     }
     if (this.displayColumns.interest1) {
-      cols.push({ key: 'interestEarned1', label: `Intereses<br/>generados<br/>(${this.annualRate}%)`, format: '1.0-0' });
+      cols.push({ key: 'interestEarned1', label: `Intereses<br/>generados<br/>(${this.annualRate}%)`, format: '1.0-0', currency: 'COP' });
     }
     if (this.displayColumns.total1) {
-      cols.push({ key: 'totalBalance1', label: `Total<br/>acumulado<br/>(${this.annualRate}%)`, format: '1.0-0' });
+      cols.push({ key: 'totalBalance1', label: `Total<br/>acumulado<br/>(${this.annualRate}%)`, format: '1.0-0', currency: 'COP' });
     }
     if (this.hasSecondaryRate && this.displayColumns.interest2) {
-      cols.push({ key: 'interestEarned2', label: `Intereses<br/>generados<br/>(${this.annualRateSecondary}%)`, format: '1.0-0' });
+      cols.push({ key: 'interestEarned2', label: `Intereses<br/>generados<br/>(${this.annualRateSecondary}%)`, format: '1.0-0', currency: 'COP' });
     }
     if (this.hasSecondaryRate && this.displayColumns.total2) {
-      cols.push({ key: 'totalBalance2', label: `Total<br/>acumulado<br/>(${this.annualRateSecondary}%)`, format: '1.0-0' });
+      cols.push({ key: 'totalBalance2', label: `Total<br/>acumulado<br/>(${this.annualRateSecondary}%)`, format: '1.0-0', currency: 'COP' });
     }
     return cols;
   }

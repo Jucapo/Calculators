@@ -106,12 +106,19 @@
   font-size: 0.9rem;
 }
 
+/* El contenedor se ciñe al ancho del input para que el % quede pegado al campo */
+.converter-card__input-row .input-with-suffix {
+  display: inline-block;
+  width: fit-content;
+}
+
 .converter-card__input {
   max-width: 10rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
   border-radius: var(--fc-radius);
   border: 1px solid var(--fc-color-border-input);
   font-size: 1rem;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;

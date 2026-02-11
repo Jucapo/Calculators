@@ -1,0 +1,23 @@
+.calc-page { width: 100%; max-width: none; margin: 0 auto; }
+.calc-page__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.calc-page__title { margin: 0; font-size: 1.75rem; font-weight: 700; flex: 1 1 auto; min-width: 0; }
+.calc-page__layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 1.5rem; align-items: flex-start; }
+.calc-page__layout--form-hidden { grid-template-columns: minmax(0, 1fr); }
+.calc-page__toolbar { flex-shrink: 0; width: fit-content; }
+.calc-page__toolbar-button { border-radius: 999px; padding: 0.3rem 0.85rem; font-size: 0.85rem; box-shadow: var(--fc-shadow-sm); border: 1px solid var(--fc-color-border); background: #fff; color: var(--fc-color-text-muted); }
+.calc-page__toolbar-button.btn--primary { background: var(--fc-color-primary); color: #fff; border-color: var(--fc-color-primary); }
+.toolbar-toggle-icon { display: inline-flex; align-items: center; justify-content: center; margin-right: 0.4rem; line-height: 0; }
+.toolbar-toggle-icon svg { width: 1.125rem; height: 1.125rem; stroke: currentColor; }
+.panel { background: var(--fc-color-bg); border-radius: var(--fc-radius-lg); padding: 1.25rem 1.5rem; box-shadow: var(--fc-shadow); border: 1px solid var(--fc-color-border); }
+.panel__title { margin: 0 0 1rem; font-size: 1.1rem; font-weight: 600; }
+.form { display: grid; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; }
+.form-group label { font-weight: 600; margin-bottom: 0.25rem; font-size: 0.9rem; }
+input[type='number'] { padding: 0.45rem 0.6rem; border-radius: var(--fc-radius); border: 1px solid var(--fc-color-border-input); font-size: 0.95rem; outline: none; }
+input:focus { border-color: var(--fc-color-primary); box-shadow: var(--fc-focus-ring); }
+.results { display: flex; flex-direction: column; gap: 1.25rem; }
+.results__summary { display: flex; flex-wrap: wrap; gap: 1rem; }
+.summary-block { flex: 1 1 260px; background: var(--fc-color-bg-muted); border-radius: var(--fc-radius-lg); border: 1px solid var(--fc-color-border); padding: 0.9rem 1.1rem; }
+.summary-block h3 { margin: 0 0 0.6rem; font-size: 1rem; }
+.summary-block__big { font-size: 1.25rem; font-weight: 700; margin: 0.5rem 0; }
+@media (max-width: 960px) { .calc-page__layout { grid-template-columns: 1fr; } .calc-page__title { font-size: 1.5rem; } }

@@ -8,6 +8,8 @@
   -webkit-overflow-scrolling: touch;
   border-radius: var(--fc-radius);
   border: 1px solid var(--fc-color-border);
+  width: 100%;
+  max-width: 100%;
 }
 
 .fc-table {
@@ -65,11 +67,17 @@ tbody tr:hover {
     max-height: 60vh;
     margin: 0 -0.5rem;
     border-radius: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: scroll;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .fc-table {
     font-size: 0.8rem;
     min-width: 480px;
+    width: max-content;
   }
 
   th, td {
